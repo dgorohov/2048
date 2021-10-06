@@ -51,7 +51,7 @@ class GameLabel(QLabel):
     }
 
     def __init__(self, width=100, height=100):
-        super(QLabel, self).__init__()
+        super().__init__()
         self.__value = None
         self.__width = width
         self.__height = height

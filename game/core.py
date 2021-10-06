@@ -11,7 +11,7 @@ MainDialogClass = uic.loadUiType(main_ui_path)[0]
 class MainDialog(QDialog, MainDialogClass):
 
     def __init__(self, parent=None):
-        super(QDialog, self).__init__(parent)
+        super().__init__(parent)
         self.setupUi(self)
 
         self.__game = None

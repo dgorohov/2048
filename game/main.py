@@ -10,7 +10,7 @@ from game.logic import Logic
 class GameDialog(QDialog):
 
     def __init__(self, parent=None, rows=4, columns=4):
-        super(QDialog, self).__init__(parent)
+        super().__init__(parent)
         self.__overlay = None
         self.__done = False
         self.__rows = rows

@@ -9,9 +9,8 @@ GameOverlayClass = uic.loadUiType(overlay_ui_path)[0]
 class Overlay(QWidget, GameOverlayClass):
 
     def __init__(self, parent=None):
-        super(QWidget, self).__init__(parent)
+        super().__init__(parent)
         self.setupUi(self)
-        self.__error = False
         if parent is not None:
             self.setFixedSize(parent.width(), parent.height())
 
