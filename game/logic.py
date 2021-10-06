@@ -59,8 +59,9 @@ class Logic:
         seed()
         positions = self.positions_available()
         if len(positions) == 0:
-            return False
-
+            if self.check_rows() is False:
+                return self.check_columns()
+            return True
         position_index = randint(0, len(positions) - 1)
         probability_of_2 = 0.9
         self.__matrix[positions[position_index][0]][
@@ -89,10 +90,6 @@ class Logic:
         avail = self.check_columns()
         if done:
             return avail, done
-        if not avail:
-            return self.check_rows(), False
-        if self.add_new():
-            return True, False
         return self.check_rows(), False
 
     def turn_left(self):
@@ -106,10 +103,6 @@ class Logic:
         avail = self.check_rows()
         if done:
             return avail, done
-        if not avail:
-            return self.check_columns(), False
-        if self.add_new():
-            return True, False
         return self.check_columns(), False
 
     def check_rows(self):

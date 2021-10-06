@@ -1,6 +1,5 @@
-from math import log10
-
-from PyQt5.QtCore import pyqtProperty, QPropertyAnimation
+from PyQt5 import QtCore
+from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QLabel
 
 
@@ -51,9 +50,15 @@ class GameLabel(QLabel):
         4: 15
     }
 
-    def __init__(self):
+    def __init__(self, width=100, height=100):
         super(QLabel, self).__init__()
         self.__value = None
+        self.__width = width
+        self.__height = height
+        self.__animation = QtCore.QPropertyAnimation(self, b"size")
+        self.__animation.setDuration(1000)
+        self.__animation.setStartValue(QSize(10, 10))
+        self.__animation.setEndValue(QSize(self.__width, self.__height))
 
     def set_value(self, value: int):
         if value != self.__value:
@@ -64,3 +69,6 @@ class GameLabel(QLabel):
                 f"background-color: {self.background_colors[value if value in self.background_colors else 0]};"
                 f"font-size: {self.sizes[n]}px;"
                 f"color: {self.colors[value if value in self.colors else 0]}")
+
+    def animate(self):
+        self.__animation.start()

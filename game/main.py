@@ -8,7 +8,6 @@ from game.logic import Logic
 
 
 class GameDialog(QDialog):
-    latest_direction = (0, 0, 0, 0)
 
     def __init__(self, parent=None, rows=4, columns=4):
         super(QDialog, self).__init__(parent)
@@ -45,28 +44,27 @@ class GameDialog(QDialog):
     def handle_key_press_event(self, event: QtGui.QKeyEvent):
         if self.__done:
             self.close()
-        if event.key() == QtCore.Qt.Key_Up and self.latest_direction[0] != 1:
-            self.make_turn(self.__logic.turn_up, (1, 0, 0, 0))
-        elif event.key() == QtCore.Qt.Key_Down and self.latest_direction[1] != 1:
-            self.make_turn(self.__logic.turn_down, (0, 1, 0, 0))
-        elif event.key() == QtCore.Qt.Key_Left and self.latest_direction[2] != 1:
-            self.make_turn(self.__logic.turn_left, (0, 0, 1, 0))
-        elif event.key() == QtCore.Qt.Key_Right and self.latest_direction[3] != 1:
-            self.make_turn(self.__logic.turn_right, (0, 0, 0, 1))
+        if event.key() == QtCore.Qt.Key_Up:
+            self.make_turn(self.__logic.turn_up)
+        elif event.key() == QtCore.Qt.Key_Down:
+            self.make_turn(self.__logic.turn_down)
+        elif event.key() == QtCore.Qt.Key_Left:
+            self.make_turn(self.__logic.turn_left)
+        elif event.key() == QtCore.Qt.Key_Right:
+            self.make_turn(self.__logic.turn_right)
+
+        self.__logic.add_new()
         self.__render_matrix()
 
-    def make_turn(self, f, direction):
+    def make_turn(self, f):
         avail, done = f()
-        if not done and avail:
-            self.latest_direction = direction
-        elif not avail:
+        if not avail:
             self.no_moves()
         elif done:
             self.end_game()
 
     def end_game(self):
         self.__done = True
-        self.latest_direction = (1, 1, 1, 1)
         if self.__overlay is None:
             self.__overlay = Overlay(parent=self)
             self.__overlay.normalMessage("Good job!", "Congratulations! Now turn off your computer and go sleep!")
@@ -74,7 +72,6 @@ class GameDialog(QDialog):
 
     def no_moves(self):
         self.__done = True
-        self.latest_direction = (1, 1, 1, 1)
         if self.__overlay is None:
             self.__overlay = Overlay(parent=self)
             self.__overlay.errorMessage("Game over", "Pack your things and go away!")
@@ -88,7 +85,6 @@ class GameDialog(QDialog):
 
     @staticmethod
     def render_number(width=100, height=100) -> GameLabel:
-        b = GameLabel()
-        b.setFixedSize(width, height)
+        b = GameLabel(width, height)
         b.setAlignment(Qt.AlignCenter)
         return b
