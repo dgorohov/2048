@@ -85,15 +85,15 @@ class Logic:
         return self.turn_column()
 
     def turn_column(self, direction=1):
-        self.shift_columns(direction)
-        avail, done = self.check_columns()
+        done = self.shift_columns(direction)
+        avail = self.check_columns()
         if done:
             return avail, done
         if not avail:
-            return self.check_rows()
+            return self.check_rows(), False
         if self.add_new():
             return True, False
-        return self.check_rows()
+        return self.check_rows(), False
 
     def turn_left(self):
         return self.turn_row(-1)
@@ -102,52 +102,45 @@ class Logic:
         return self.turn_row()
 
     def turn_row(self, direction=1):
-        self.shift_rows(direction)
-        avail, done = self.check_rows()
+        done = self.shift_rows(direction)
+        avail = self.check_rows()
         if done:
             return avail, done
         if not avail:
-            return self.check_columns()
+            return self.check_columns(), False
         if self.add_new():
             return True, False
-        return self.check_columns()
+        return self.check_columns(), False
 
     def check_rows(self):
         for row in range(self.__rows):
             rows = self.filter_not_null(self.__matrix[row])
-            final = self.filter_end_state(rows)
-            if len(final) > 0:
-                return True, True
-        for row in range(self.__rows):
-            rows = self.filter_not_null(self.__matrix[row])
             if len(rows) != self.__rows:
-                return True, False
+                return True
             for index in range(len(rows) - 1):
                 if rows[index] == rows[index + 1]:
-                    return True, False
-        return False, False
+                    return True
+        return False
 
     def check_columns(self):
         for column in range(self.__columns):
             columns = [self.__matrix[row][column] for row in range(0, self.__rows)]
             columns = self.filter_not_null(columns)
-            final = self.filter_end_state(columns)
-            if len(final) > 0:
-                return True, True
-        for column in range(self.__columns):
-            columns = [self.__matrix[row][column] for row in range(0, self.__rows)]
-            columns = self.filter_not_null(columns)
             if len(columns) != self.__columns:
-                return True, False
+                return True
             for index in range(len(columns) - 1):
                 if columns[index] == columns[index + 1]:
-                    return True, False
-        return False, False
+                    return True
+        return False
 
     def shift_columns(self, direction=1):
         for column in range(0, self.__columns):
             rows = [self.__matrix[row][column] for row in range(0, self.__rows)]
+            final = self.filter_end_state(rows)
+            if len(final) > 0:
+                return True
             self.replace_rows(column, self.squeeze(rows, direction))
+        return False
 
     def replace_columns(self, row, values):
         for column in range(0, len(values)):
@@ -156,7 +149,11 @@ class Logic:
     def shift_rows(self, direction=1):
         for row in range(0, self.__rows):
             columns = [self.__matrix[row][column] for column in range(0, self.__columns)]
+            final = self.filter_end_state(columns)
+            if len(final) > 0:
+                return True
             self.replace_columns(row, self.squeeze(columns, direction))
+        return False
 
     def replace_rows(self, column, values):
         for row in range(0, len(values)):
