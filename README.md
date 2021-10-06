@@ -7,5 +7,8 @@
 
 Use `<Left>`, `<Right>`, `<Up>` and `<Down>` keys to merge the cells. `<Esc>` to close the game.
 
-### TODOs
-- [ ] Check for final state
+Screenshots:
+
+![Start game](images/start_game.png)
+![Game in progress](images/game.png)
+![Game over](images/game_over.png)
